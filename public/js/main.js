@@ -21,4 +21,4 @@ function getData () {
         console.error('Error:', error);
     });
 }
-getData()
+// getData()
