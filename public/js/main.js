@@ -1,24 +1,38 @@
-// Authorization token that must have been created previously. See : https://developer.spotify.com/documentation/web-api/concepts/authorization
-const token = 'BQDpdft_Bam9SHFWSzt2Cfj1ILcf9hi7yDfqBNl-GsnaNWZLnOvci4UsdZWM-7Qlq71OrhPffE3KL3IxoL0B4liS7Two4Y07Kiq-7aP_DRDIDayXzbU';
+const spotifyAuthUrl = 'https://musicfy-auth.netlify.app/.netlify/functions/spotify-auth';
 
-function getData () {
-    const accessToken = token; 
-    const query = 'Nirvana'; 
-    const searchType = 'artist'; // Could be 'album', 'track', 'playlist', etc.
+async function updateSpotifyToken() {
+    try {
+        const response = await axios.get(spotifyAuthUrl);
+        const token = JSON.stringify(response.data); // This might be a simple string
+        localStorage.setItem('spotify_access_token', token); // Save the string directly
+        console.log('Token updated and saved:', token);
+    } catch (error) {
+        console.error('Failed to fetch Spotify token:', error);
+    }
+}
 
-    fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${searchType}`, {
-        method: 'GET',
+function getSpotifyData() {
+    let obj = JSON.parse(localStorage.getItem('spotify_access_token'));
+
+    const query = $('#searchBar')[0].value || 'sugar'; 
+    const searchType = 'track'; // Could be 'album', 'track', 'playlist', etc.
+
+    axios.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${searchType}`, {
         headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${obj.access_token}`,
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Process search results here
+    .then(response => {
+        const data = response.data;
+        // updating token if it's expired
+        if(data.error?.message.includes('expired')) {
+            updateSpotifyToken();
+        }
+
+        console.log('Spotify data:', data);
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
-// getData()
