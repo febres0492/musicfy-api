@@ -16,5 +16,9 @@ This project builds upon or uses components from the following projects:
 
 - **[example-hello-world-functions](https://github.com/netlify/example-hello-world-functions)** by [philhawksworth](https://github.com/philhawksworth) - This site shows a very simple "Hello World" example of developing and running serverless functions with Netlify Functions. It includes links to a deployed serverless function and an example of accessing the function using a customized URL.
 
+[example-hello-world-functions](https://github.com/netlify/example-hello-world-functions) repo is licensed under the ISC License - see the [LICENSE](https://github.com/netlify/example-hello-world-functions/blob/main/package.json) file for details.
+
+
+ 
 
 
